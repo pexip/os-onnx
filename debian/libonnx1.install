@@ -1,0 +1,2 @@
+usr/lib/*/libonnx.so.*
+usr/lib/*/libonnx_proto.so.*

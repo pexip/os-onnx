@@ -1,0 +1,5 @@
+usr/include/onnx
+usr/lib/*/cmake
+usr/lib/*/libonnx.so
+usr/lib/*/lib*.a
+usr/lib/*/libonnx_proto.so

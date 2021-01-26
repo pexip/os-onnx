@@ -1,0 +1,8 @@
+# libonnxifi-dummy is not the main library of this package
+libonnxifi: package-name-doesnt-match-sonames libonnxifi-dummy
+# This library is deliberately used without SOVERSION https://github.com/onnx/onnx/issues/1679#issuecomment-445325260
+libonnxifi: dev-pkg-without-shlib-symlink usr/lib/*/libonnxifi_dummy.so usr/lib/*/libonnxifi_dummy.so
+# This library is deliberately used without SONAME https://github.com/onnx/onnx/issues/1679#issuecomment-445325260
+libonnxifi: shlib-without-versioned-soname usr/lib/x86_64-linux-gnu/libonnxifi_dummy.so libonnxifi_dummy.so
+# This library is deliberately used without SONAME and SOVERSION https://github.com/onnx/onnx/issues/1679#issuecomment-445325260
+libonnxifi: sharedobject-in-library-directory-missing-soname usr/lib/x86_64-linux-gnu/libonnxifi.so

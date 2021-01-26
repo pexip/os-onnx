@@ -1,0 +1,120 @@
+Source: onnx
+Section: science
+Homepage: https://onnx.ai
+Priority: optional
+Standards-Version: 4.5.0
+Vcs-Git: https://salsa.debian.org/deeplearning-team/onnx.git
+Vcs-Browser: https://salsa.debian.org/deeplearning-team/onnx
+Maintainer: Debian Deep Learning Team <debian-ai@lists.debian.org>
+Uploaders: Mo Zhou <lumin@debian.org>
+Build-Depends: cmake,
+               debhelper-compat (= 12),
+               dh-exec,
+               dh-python,
+               libprotobuf-dev,
+               protobuf-compiler,
+               pybind11-dev,
+               python3-all-dev,
+               python3-protobuf <!nocheck>,
+               python3-pybind11,
+               python3-pytest <!nocheck>,
+               python3-pytest-runner,
+               python3-tabulate <!nocheck>
+Rules-Requires-Root: no
+
+Package: python3-onnx
+Architecture: any
+Depends: ${misc:Depends}, ${python3:Depends}, ${shlibs:Depends}
+Provides: ${python3:Provides}
+Description: Open Neural Network Exchange (ONNX) (Python)
+ Open Neural Network Exchange (ONNX) is the first step toward an open ecosystem
+ that empowers AI developers to choose the right tools as their project evolves.
+ ONNX provides an open source format for AI models.  It defines an extensible
+ computation graph model, as well as definitions of built-in operators and
+ standard data types. Initially onnx focuses on the capabilities needed for
+ inferencing (evaluation).
+ .
+ Caffe2, PyTorch, Microsoft Cognitive Toolkit, Apache MXNet and other tools are
+ developing ONNX support. Enabling interoperability between different frameworks
+ and streamlining the path from research to production will increase the speed
+ of innovation in the AI community.
+ .
+ This package contains the python interface.
+
+Package: libonnx1
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Open Neural Network Exchange (ONNX) (libs)
+ Open Neural Network Exchange (ONNX) is the first step toward an open ecosystem
+ that empowers AI developers to choose the right tools as their project evolves.
+ ONNX provides an open source format for AI models.  It defines an extensible
+ computation graph model, as well as definitions of built-in operators and
+ standard data types. Initially onnx focuses on the capabilities needed for
+ inferencing (evaluation).
+ .
+ Caffe2, PyTorch, Microsoft Cognitive Toolkit, Apache MXNet and other tools are
+ developing ONNX support. Enabling interoperability between different frameworks
+ and streamlining the path from research to production will increase the speed
+ of innovation in the AI community.
+ .
+ This package contains the shared objects.
+
+Package: libonnxifi
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Open Neural Network Exchange (ONNX) (ONNXIFI)
+ Open Neural Network Exchange (ONNX) is the first step toward an open ecosystem
+ that empowers AI developers to choose the right tools as their project evolves.
+ ONNX provides an open source format for AI models.  It defines an extensible
+ computation graph model, as well as definitions of built-in operators and
+ standard data types. Initially onnx focuses on the capabilities needed for
+ inferencing (evaluation).
+ .
+ Caffe2, PyTorch, Microsoft Cognitive Toolkit, Apache MXNet and other tools are
+ developing ONNX support. Enabling interoperability between different frameworks
+ and streamlining the path from research to production will increase the speed
+ of innovation in the AI community.
+ .
+ This package contains the libonnxifi.so shared object.
+
+Package: libonnx-dev
+Architecture: any
+Multi-Arch: same
+Depends: libonnx1 (= ${binary:Version}),
+         libonnxifi (= ${binary:Version}),
+         ${misc:Depends}
+Description: Open Neural Network Exchange (ONNX) (dev)
+ Open Neural Network Exchange (ONNX) is the first step toward an open ecosystem
+ that empowers AI developers to choose the right tools as their project evolves.
+ ONNX provides an open source format for AI models.  It defines an extensible
+ computation graph model, as well as definitions of built-in operators and
+ standard data types. Initially onnx focuses on the capabilities needed for
+ inferencing (evaluation).
+ .
+ Caffe2, PyTorch, Microsoft Cognitive Toolkit, Apache MXNet and other tools are
+ developing ONNX support. Enabling interoperability between different frameworks
+ and streamlining the path from research to production will increase the speed
+ of innovation in the AI community.
+ .
+ This package contains the development files.
+
+Package: libonnx-testdata
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends}
+Description: Open Neural Network Exchange (ONNX) (test data)
+ Open Neural Network Exchange (ONNX) is the first step toward an open ecosystem
+ that empowers AI developers to choose the right tools as their project evolves.
+ ONNX provides an open source format for AI models.  It defines an extensible
+ computation graph model, as well as definitions of built-in operators and
+ standard data types. Initially onnx focuses on the capabilities needed for
+ inferencing (evaluation).
+ .
+ Caffe2, PyTorch, Microsoft Cognitive Toolkit, Apache MXNet and other tools are
+ developing ONNX support. Enabling interoperability between different frameworks
+ and streamlining the path from research to production will increase the speed
+ of innovation in the AI community.
+ .
+ This package contains the test data.

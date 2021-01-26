@@ -1,0 +1,2 @@
+usr/share/libonnx-testdata/data  usr/include/onnx/backend/test/data
+usr/share/libonnx-testdata/data  usr/lib/python3/dist-packages/onnx/backend/test/data

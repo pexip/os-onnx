@@ -1,0 +1,2 @@
+usr/lib/libonnxifi*.so
+usr/lib/*/libonnxifi*.so

@@ -1,0 +1,20 @@
+Description: give the shared objects a soversion
+Forward: no need
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -312,6 +312,7 @@
+ list(APPEND ONNX_SRCS ${__tmp_srcs})
+ 
+ add_library(onnx_proto ${ONNX_PROTO_SRCS} ${ONNX_PROTO_HDRS})
++set_target_properties(onnx_proto PROPERTIES VERSION 1 SOVERSION 1)
+ target_include_directories(onnx_proto PUBLIC
+   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+   $<INSTALL_INTERFACE:include>
+@@ -368,6 +369,7 @@
+ else()
+   add_library(onnx ${ONNX_SRCS})
+ endif()
++set_target_properties(onnx PROPERTIES VERSION 1 SOVERSION 1)
+ 
+ target_include_directories(onnx PUBLIC
+   $<BUILD_INTERFACE:${ONNX_ROOT}>

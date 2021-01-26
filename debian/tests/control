@@ -1,0 +1,2 @@
+Test-Command: pytest-3 -v -k 'not OnnxBackendRealModelTest and not examples'
+Depends: python3-pytest, @
