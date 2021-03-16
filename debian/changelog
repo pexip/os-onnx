@@ -1,3 +1,9 @@
+onnx (1.7.0+dfsg-3pexip1) pexip; urgency=medium
+
+  * Prepare Pexip packaging
+
+ -- John-Mark Bell <jmb@pexip.com>  Tue, 16 Mar 2021 16:11:54 +0000
+
 onnx (1.7.0+dfsg-3) unstable; urgency=medium
 
   * Update patch headers and lintian overrides.
