@@ -1,3 +1,9 @@
+onnx (1.7.0+dfsg-3pexip3) pexip; urgency=medium
+
+  * Initial bullseye build
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 02 Jun 2022 14:42:38 +0100
+
 onnx (1.7.0+dfsg-3pexip2) pexip; urgency=medium
 
   * No-change rebuild
