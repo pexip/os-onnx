@@ -1,18 +1,26 @@
 #!/usr/bin/make -f
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
-export PYBUILD_NAME            = onnx
-export PYBUILD_DISABLE_python2 = 1
+export CMAKE_ARGS              = -DONNX_USE_PROTOBUF_SHARED_LIBS=ON \
+                                 -DBUILD_SHARED_LIBS=ON \
+                                 -DONNX_BUILD_TESTS=OFF \
+                                 -DCMAKE_BUILD_TYPE=Release
 
 %:
 	dh $@ -Spybuild --with python3
 
-override_dh_auto_configure:
+execute_before_dh_auto_configure:
 	find . -type f -name '*.py' -exec \
-		sed -i -e 's@#!/usr/bin/env python@#!/usr/bin/python3@' '{}' +
+        sed -i -e 's@#!/usr/bin/env python@#!/usr/bin/python3@' '{}' +
 	dh_auto_configure -Scmake -- \
-		-DBUILD_SHARED_LIBS=ON \
-		-DPYTHON_EXECUTABLE=python3
-	dh_auto_configure -Spybuild
+        -DBUILD_SHARED_LIBS=ON \
+        -DONNX_USE_PROTOBUF_SHARED_LIBS=ON \
+        -DONNX_BUILD_TESTS=OFF \
+        -DBUILD_ONNX_PYTHON=ON \
+        -Dprotobuf_BUILD_SHARED_LIBS=OFF \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -Dprotobuf_BUILD_TESTS=OFF \
+        -DCMAKE_BUILD_TYPE=Release
+	dh_auto_configure
 
 override_dh_auto_build:
 	: # so things won't be built again while installing
@@ -27,9 +35,14 @@ override_dh_auto_install:
 	-$(RM) -rf debian/tmp/usr/include/onnx/backend/test/data
 	# Use the test data installed in python package as the main copy
 	mkdir -v -p debian/libonnx-testdata/usr/share/libonnx-testdata/
-	mv debian/python3-onnx/usr/lib/$(shell py3versions -d)/dist-packages/onnx/backend/test/data \
-		debian/libonnx-testdata/usr/share/libonnx-testdata/
-	-$(RM) -rf debian/python3-onnx/usr/lib/python3*/dist-packages/onnx/backend/test/data
+	mv debian/tmp/usr/lib/$(shell py3versions -d)/dist-packages/onnx/backend/test/data \
+	   debian/libonnx-testdata/usr/share/libonnx-testdata/
+	-$(RM) -rf debian/tmp/usr/lib/python3*/dist-packages/onnx/backend/test/data
+	# install the python package
+	mkdir -p debian/python3-onnx/usr/lib/python3
+	for py3 in $(shell py3versions -s); do \
+		cp -av debian/tmp/usr/lib/$${py3}/dist-packages debian/python3-onnx/usr/lib/python3/; \
+		rm -rf debian/tmp/usr/lib/$${py3}/dist-packages; done
 
 override_dh_missing:
 	dh_missing --fail-missing

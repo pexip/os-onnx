@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: Apache-2.0
 import unittest
 
 from onnx import defs, checker, helper
@@ -5,7 +6,7 @@ from onnx import defs, checker, helper
 
 class TestRelu(unittest.TestCase):
 
-    def test_elu(self):  # type: () -> None
+    def test_elu(self) -> None:
         self.assertTrue(defs.has('Elu'))
         node_def = helper.make_node(
             'Elu', ['X'], ['Y'], alpha=1.0)

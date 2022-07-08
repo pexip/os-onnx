@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -18,7 +15,7 @@ def pow(x, y):  # type: ignore
 class Pow(Base):
 
     @staticmethod
-    def export():  # type: () -> None
+    def export() -> None:
         node = onnx.helper.make_node(
             'Pow',
             inputs=['x', 'y'],
@@ -38,7 +35,7 @@ class Pow(Base):
                name='test_pow')
 
     @staticmethod
-    def export_pow_broadcast():  # type: () -> None
+    def export_pow_broadcast() -> None:
         node = onnx.helper.make_node(
             'Pow',
             inputs=['x', 'y'],
@@ -64,7 +61,7 @@ class Pow(Base):
                name='test_pow_bcast_array')
 
     @staticmethod
-    def export_types():  # type: () -> None
+    def export_types() -> None:
         node = onnx.helper.make_node(
             'Pow',
             inputs=['x', 'y'],

@@ -1,7 +1,12 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <cstdlib>
 #include <iostream>
 #include <queue>
-#include <cstdlib>
 
+#include "onnx/onnx-data_pb.h"
 #include "onnx/onnxifi_loader.h"
 #include "onnx/onnxifi_utils.h"
 #include "onnx/string_utils.h"
@@ -20,11 +25,8 @@ struct UnsolvedTestData {
   std::vector<std::string> input_filenames_;
   std::vector<std::string> output_filenames_;
   UnsolvedTestData() {}
-  UnsolvedTestData(
-      const std::vector<std::string>& input_filenames,
-      const std::vector<std::string>& output_filenames)
-      : input_filenames_(input_filenames),
-        output_filenames_(output_filenames) {}
+  UnsolvedTestData(const std::vector<std::string>& input_filenames, const std::vector<std::string>& output_filenames)
+      : input_filenames_(input_filenames), output_filenames_(output_filenames) {}
 };
 
 /**
@@ -39,9 +41,7 @@ struct UnsolvedTestCase {
       const std::string& model_filename,
       const std::string& model_dirname,
       const std::vector<UnsolvedTestData>& test_data)
-      : model_filename_(model_filename),
-        model_dirname_(model_dirname),
-        test_data_(test_data) {}
+      : model_filename_(model_filename), model_dirname_(model_dirname), test_data_(test_data) {}
 
   UnsolvedTestCase() {}
   std::string test_case_name_;
@@ -58,7 +58,14 @@ struct UnsolvedTestCase {
  */
 struct ResolvedTestData {
   std::vector<ONNX_NAMESPACE::TensorProto> inputs_;
+  std::vector<ONNX_NAMESPACE::SequenceProto> seq_inputs_;
+  std::vector<ONNX_NAMESPACE::MapProto> map_inputs_;
+  std::vector<ONNX_NAMESPACE::OptionalProto> optional_inputs_;
+
   std::vector<ONNX_NAMESPACE::TensorProto> outputs_;
+  std::vector<ONNX_NAMESPACE::SequenceProto> seq_outputs_;
+  std::vector<ONNX_NAMESPACE::MapProto> map_outputs_;
+  std::vector<ONNX_NAMESPACE::OptionalProto> optional_outputs_;
 };
 
 /**
@@ -83,7 +90,7 @@ class TestDriver {
   void SetDefaultDir(const std::string& s);
   std::vector<UnsolvedTestCase> testcases_;
   TestDriver(const std::string& default_dir = ".") {
-    default_dir_ = default_dir_;
+    default_dir_ = default_dir;
   }
   /**
    *	Fetch all test cases in target.
@@ -102,9 +109,7 @@ class TestDriver {
    *	Regular file(s): input_X.pb, store one input tensor.
    *	Regular file(s): output_X.pb, store one output tensor.
    */
-  void FetchSingleTestCase(
-      const std::string& case_dir,
-      const std::string& test_case_name);
+  void FetchSingleTestCase(const std::string& case_dir, const std::string& test_case_name);
 };
 
 std::vector<UnsolvedTestCase> GetTestCase();
@@ -123,8 +128,7 @@ ResolvedTestCase LoadSingleTestCase(const UnsolvedTestCase& t);
  *	Load all test cases.
  */
 std::vector<ResolvedTestCase> LoadAllTestCases(const std::string& location);
-std::vector<ResolvedTestCase> LoadAllTestCases(
-    const std::vector<UnsolvedTestCase>& t);
+std::vector<ResolvedTestCase> LoadAllTestCases(const std::vector<UnsolvedTestCase>& t);
 
 } // namespace testing
 } // namespace ONNX_NAMESPACE

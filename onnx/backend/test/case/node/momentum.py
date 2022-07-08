@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -11,7 +8,7 @@ from ..base import Base
 from . import expect
 
 
-def apply_momentum(t, r, x, g, v, norm_coefficient, alpha, beta):  # type: ignore
+def apply_momentum(r, t, x, g, v, norm_coefficient, alpha, beta):  # type: ignore
     # Add gradient of regularization term.
     g_regularized = norm_coefficient * x + g
     # Coefficient of gradient should be 1 at the first iteration.
@@ -23,7 +20,7 @@ def apply_momentum(t, r, x, g, v, norm_coefficient, alpha, beta):  # type: ignor
     return x_new, v_new
 
 
-def apply_nesterov(t, r, x, g, v, norm_coefficient, alpha, beta):  # type: ignore
+def apply_nesterov(r, t, x, g, v, norm_coefficient, alpha, beta):  # type: ignore
     # Add gradient of regularization term.
     g_regularized = norm_coefficient * x + g
     # Coefficient of gradient should be 1 at the first iteration.
@@ -38,7 +35,7 @@ def apply_nesterov(t, r, x, g, v, norm_coefficient, alpha, beta):  # type: ignor
 class Momentum(Base):
 
     @staticmethod
-    def export_momentum():  # type: () -> None
+    def export_momentum() -> None:
         # Define operator attributes.
         norm_coefficient = 0.001
         alpha = 0.95
@@ -72,7 +69,7 @@ class Momentum(Base):
                opset_imports=[onnx.helper.make_opsetid(AI_ONNX_PREVIEW_TRAINING_DOMAIN, 1)])
 
     @staticmethod
-    def export_nesterov_momentum():  # type: () -> None
+    def export_nesterov_momentum() -> None:
         # Define operator attributes.
         norm_coefficient = 0.01
         alpha = 0.95
@@ -96,7 +93,7 @@ class Momentum(Base):
         g = np.array([-0.94, -2.5], dtype=np.float32)
         v = np.array([1.7, 3.6], dtype=np.float32)
 
-        # Compute expected outputs of Adagrad.
+        # Compute expected outputs of Momentum.
         x_new, v_new = apply_nesterov(r, t, x, g, v,
                                       norm_coefficient, alpha, beta)
 
@@ -106,7 +103,7 @@ class Momentum(Base):
                opset_imports=[onnx.helper.make_opsetid(AI_ONNX_PREVIEW_TRAINING_DOMAIN, 1)])
 
     @staticmethod
-    def export_momentum_multiple():  # type: () -> None
+    def export_momentum_multiple() -> None:
         # Define operator attributes.
         norm_coefficient = 0.001
         alpha = 0.95

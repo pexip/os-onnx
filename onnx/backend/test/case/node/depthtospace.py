@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -13,7 +10,7 @@ from . import expect
 class DepthToSpace(Base):
 
     @staticmethod
-    def export_default_mode_example():  # type: () -> None
+    def export_default_mode_example() -> None:
         node = onnx.helper.make_node(
             'DepthToSpace',
             inputs=['x'],
@@ -53,7 +50,7 @@ class DepthToSpace(Base):
                name='test_depthtospace_example')
 
     @staticmethod
-    def export_crd_mode_example():  # type: () -> None
+    def export_crd_mode_example() -> None:
         node = onnx.helper.make_node(
             'DepthToSpace',
             inputs=['x'],

@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -13,7 +10,7 @@ from . import expect
 class Clip(Base):
 
     @staticmethod
-    def export():  # type: () -> None
+    def export() -> None:
         node = onnx.helper.make_node(
             'Clip',
             inputs=['x', 'min', 'max'],
@@ -56,7 +53,7 @@ class Clip(Base):
                name='test_clip_splitbounds')
 
     @staticmethod
-    def export_clip_default():  # type: () -> None
+    def export_clip_default() -> None:
         node = onnx.helper.make_node(
             'Clip',
             inputs=['x', 'min'],
@@ -93,7 +90,7 @@ class Clip(Base):
                name='test_clip_default_inbounds')
 
     @staticmethod
-    def export_clip_default_int8():  # type: () -> None
+    def export_clip_default_int8() -> None:
         node = onnx.helper.make_node(
             'Clip',
             inputs=['x', 'min'],
