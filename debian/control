@@ -15,12 +15,15 @@ Build-Depends: cmake,
                libprotobuf-dev,
                protobuf-compiler,
                pybind11-dev,
+               python3-pybind11,
+               python3-all,
                python3-all-dev,
                python3-protobuf <!nocheck>,
                python3-pybind11,
                python3-pytest <!nocheck>,
                python3-pytest-runner,
-               python3-tabulate <!nocheck>
+               python3-tabulate <!nocheck>,
+               python3-numpy <!nocheck>,
 Rules-Requires-Root: no
 XS-Pexip-Upstream: http://deb.debian.org/debian/ bookworm
 

@@ -1,7 +1,9 @@
 exclude nbval for the test.
---- a/setup.cfg
-+++ b/setup.cfg
-@@ -2,7 +2,6 @@
+Index: onnx/setup.cfg
+===================================================================
+--- onnx.orig/setup.cfg
++++ onnx/setup.cfg
+@@ -4,7 +4,6 @@
  test=pytest
  
  [tool:pytest]

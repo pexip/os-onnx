@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -13,7 +10,7 @@ from . import expect
 class Range(Base):
 
     @staticmethod
-    def export_range_float_type_positive_delta():  # type: () -> None
+    def export_range_float_type_positive_delta() -> None:
         node = onnx.helper.make_node(
             'Range',
             inputs=['start', 'limit', 'delta'],
@@ -29,7 +26,7 @@ class Range(Base):
                name='test_range_float_type_positive_delta')
 
     @staticmethod
-    def export_range_int32_type_negative_delta():  # type: () -> None
+    def export_range_int32_type_negative_delta() -> None:
         node = onnx.helper.make_node(
             'Range',
             inputs=['start', 'limit', 'delta'],

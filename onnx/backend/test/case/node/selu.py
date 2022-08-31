@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -13,7 +10,7 @@ from . import expect
 class Selu(Base):
 
     @staticmethod
-    def export():  # type: () -> None
+    def export() -> None:
         node = onnx.helper.make_node(
             'Selu',
             inputs=['x'],
@@ -34,7 +31,7 @@ class Selu(Base):
                name='test_selu')
 
     @staticmethod
-    def export_selu_default():  # type: () -> None
+    def export_selu_default() -> None:
         default_alpha = 1.67326319217681884765625
         default_gamma = 1.05070102214813232421875
         node = onnx.helper.make_node(

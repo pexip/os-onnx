@@ -1,16 +1,18 @@
 Description: give the shared objects a soversion
 Forward: no need
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -312,6 +312,7 @@
+Index: onnx/CMakeLists.txt
+===================================================================
+--- onnx.orig/CMakeLists.txt
++++ onnx/CMakeLists.txt
+@@ -364,6 +364,7 @@ list(REMOVE_ITEM __tmp_srcs ${onnx_gtest
  list(APPEND ONNX_SRCS ${__tmp_srcs})
  
  add_library(onnx_proto ${ONNX_PROTO_SRCS} ${ONNX_PROTO_HDRS})
 +set_target_properties(onnx_proto PROPERTIES VERSION 1 SOVERSION 1)
+ add_dependencies(onnx_proto gen_onnx_operators_proto gen_onnx_data_proto)
  target_include_directories(onnx_proto PUBLIC
    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
-   $<INSTALL_INTERFACE:include>
-@@ -368,6 +369,7 @@
+@@ -421,6 +422,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "AIX")
  else()
    add_library(onnx ${ONNX_SRCS})
  endif()

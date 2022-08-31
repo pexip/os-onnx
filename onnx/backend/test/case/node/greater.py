@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -13,7 +10,7 @@ from . import expect
 class Greater(Base):
 
     @staticmethod
-    def export():  # type: () -> None
+    def export() -> None:
         node = onnx.helper.make_node(
             'Greater',
             inputs=['x', 'y'],
@@ -27,7 +24,7 @@ class Greater(Base):
                name='test_greater')
 
     @staticmethod
-    def export_greater_broadcast():  # type: () -> None
+    def export_greater_broadcast() -> None:
         node = onnx.helper.make_node(
             'Greater',
             inputs=['x', 'y'],

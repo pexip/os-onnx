@@ -3,3 +3,4 @@ usr/lib/*/cmake
 usr/lib/*/libonnx.so
 usr/lib/*/lib*.a
 usr/lib/*/libonnx_proto.so
+onnx/onnx.proto /usr/include/onnx/

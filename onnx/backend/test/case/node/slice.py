@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -13,7 +10,7 @@ from . import expect
 class Slice(Base):
 
     @staticmethod
-    def export_slice():  # type: () -> None
+    def export_slice() -> None:
         node = onnx.helper.make_node(
             'Slice',
             inputs=['x', 'starts', 'ends', 'axes', 'steps'],
@@ -31,7 +28,7 @@ class Slice(Base):
                name='test_slice')
 
     @staticmethod
-    def export_slice_neg():  # type: () -> None
+    def export_slice_neg() -> None:
         node = onnx.helper.make_node(
             'Slice',
             inputs=['x', 'starts', 'ends', 'axes', 'steps'],
@@ -49,7 +46,7 @@ class Slice(Base):
                name='test_slice_neg')
 
     @staticmethod
-    def export_slice_start_out_of_bounds():  # type: () -> None
+    def export_slice_start_out_of_bounds() -> None:
         node = onnx.helper.make_node(
             'Slice',
             inputs=['x', 'starts', 'ends', 'axes', 'steps'],
@@ -67,7 +64,7 @@ class Slice(Base):
                name='test_slice_start_out_of_bounds')
 
     @staticmethod
-    def export_slice_end_out_of_bounds():  # type: () -> None
+    def export_slice_end_out_of_bounds() -> None:
         node = onnx.helper.make_node(
             'Slice',
             inputs=['x', 'starts', 'ends', 'axes', 'steps'],
@@ -85,7 +82,7 @@ class Slice(Base):
                name='test_slice_end_out_of_bounds')
 
     @staticmethod
-    def export_slice_default_axes():  # type: () -> None
+    def export_slice_default_axes() -> None:
         node = onnx.helper.make_node(
             'Slice',
             inputs=['x', 'starts', 'ends'],
@@ -101,7 +98,7 @@ class Slice(Base):
                name='test_slice_default_axes')
 
     @staticmethod
-    def export_slice_default_steps():  # type: () -> None
+    def export_slice_default_steps() -> None:
         node = onnx.helper.make_node(
             'Slice',
             inputs=['x', 'starts', 'ends', 'axes'],
@@ -118,7 +115,7 @@ class Slice(Base):
                name='test_slice_default_steps')
 
     @staticmethod
-    def export_slice_neg_steps():  # type: () -> None
+    def export_slice_neg_steps() -> None:
         node = onnx.helper.make_node(
             'Slice',
             inputs=['x', 'starts', 'ends', 'axes', 'steps'],
@@ -129,14 +126,14 @@ class Slice(Base):
         starts = np.array([20, 10, 4], dtype=np.int64)
         ends = np.array([0, 0, 1], dtype=np.int64)
         axes = np.array([0, 1, 2], dtype=np.int64)
-        steps = np.array([-1, -3, -2])
+        steps = np.array([-1, -3, -2]).astype(np.int64)
         y = x[20:0:-1, 10:0:-3, 4:1:-2]
 
         expect(node, inputs=[x, starts, ends, axes, steps], outputs=[y],
                name='test_slice_neg_steps')
 
     @staticmethod
-    def export_slice_negative_axes():  # type: () -> None
+    def export_slice_negative_axes() -> None:
         node = onnx.helper.make_node(
             'Slice',
             inputs=['x', 'starts', 'ends', 'axes'],

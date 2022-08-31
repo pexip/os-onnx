@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -18,13 +15,13 @@ def topk_sorted_implementation(X, k, axis, largest):  # type: ignore
         sorted_values = np.flip(sorted_values, axis=axis)
     topk_sorted_indices = np.take(sorted_indices, np.arange(k), axis=axis)
     topk_sorted_values = np.take(sorted_values, np.arange(k), axis=axis)
-    return topk_sorted_values, topk_sorted_indices
+    return topk_sorted_values, np.array(topk_sorted_indices, dtype=np.int64)
 
 
 class TopK(Base):
 
     @staticmethod
-    def export_top_k():  # type: () -> None
+    def export_top_k() -> None:
         axis = 1
         largest = 1
 
@@ -56,7 +53,7 @@ class TopK(Base):
                name='test_top_k')
 
     @staticmethod
-    def export_top_k_smallest():  # type: () -> None
+    def export_top_k_smallest() -> None:
         axis = 1
         largest = 0
         sorted = 1
@@ -92,7 +89,7 @@ class TopK(Base):
                name='test_top_k_smallest')
 
     @staticmethod
-    def export_top_k_negative_axis():  # type: () -> None
+    def export_top_k_negative_axis() -> None:
         axis = -1
         largest = 1
 

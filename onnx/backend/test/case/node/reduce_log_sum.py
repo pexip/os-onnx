@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -13,7 +10,7 @@ from . import expect
 class ReduceLogSum(Base):
 
     @staticmethod
-    def export_nokeepdims():  # type: () -> None
+    def export_nokeepdims() -> None:
         node = onnx.helper.make_node(
             'ReduceLogSum',
             inputs=['data'],
@@ -39,7 +36,7 @@ class ReduceLogSum(Base):
                name='test_reduce_log_sum_asc_axes')
 
     @staticmethod
-    def export_keepdims():  # type: () -> None
+    def export_keepdims() -> None:
         node = onnx.helper.make_node(
             'ReduceLogSum',
             inputs=['data'],
@@ -51,7 +48,7 @@ class ReduceLogSum(Base):
                name='test_reduce_log_sum_default')
 
     @staticmethod
-    def export_negative_axes_keepdims():  # type: () -> None
+    def export_negative_axes_keepdims() -> None:
         node = onnx.helper.make_node(
             'ReduceLogSum',
             inputs=['data'],
