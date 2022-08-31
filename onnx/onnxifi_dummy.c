@@ -1,4 +1,8 @@
 /*
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/*
  * Dummy implementation of ONNX backend interface for manual test.
  * Prints the name of the called function and backend name on each call.
  */
@@ -170,10 +174,10 @@ onnxGetExtensionFunctionAddress(
     if (strcmp(name, extension_function_list[i]) == 0) {
       switch (i) {
         case 0:
-          *function = &onnxGetExtensionFunctionAddress;
+          *function = (void *)&onnxGetExtensionFunctionAddress;
           break;
         case 1:
-          *function = &onnxSetIOAndRunGraph;
+          *function = (void *)&onnxSetIOAndRunGraph;
           break;
       }
     }

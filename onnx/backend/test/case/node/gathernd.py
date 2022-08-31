@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -10,8 +7,7 @@ from ..base import Base
 from . import expect
 
 
-def gather_nd_impl(data, indices, batch_dims):
-    # type: (np.ndarray, np.ndarray, int) -> np.ndarray
+def gather_nd_impl(data: np.ndarray, indices: np.ndarray, batch_dims: int) -> np.ndarray:
     # Note the data rank - will be reused multiple times later
     data_rank = len(data.shape)
 
@@ -55,7 +51,7 @@ def gather_nd_impl(data, indices, batch_dims):
 class GatherND(Base):
 
     @staticmethod
-    def export_int32():  # type: () -> None
+    def export_int32() -> None:
         node = onnx.helper.make_node(
             'GatherND',
             inputs=['data', 'indices'],
@@ -71,7 +67,7 @@ class GatherND(Base):
                name='test_gathernd_example_int32')
 
     @staticmethod
-    def export_float32():  # type: () -> None
+    def export_float32() -> None:
         node = onnx.helper.make_node(
             'GatherND',
             inputs=['data', 'indices'],
@@ -87,7 +83,7 @@ class GatherND(Base):
                name='test_gathernd_example_float32')
 
     @staticmethod
-    def export_int32_batchdim_1():  # type: () -> None
+    def export_int32_batchdim_1() -> None:
         node = onnx.helper.make_node(
             'GatherND',
             inputs=['data', 'indices'],

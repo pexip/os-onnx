@@ -1,3 +1,5 @@
+<!--- SPDX-License-Identifier: Apache-2.0 -->
+
 ### Implementing an ONNX backend
 
 #### What is an ONNX backend
@@ -6,7 +8,7 @@ An ONNX backend is a library that can run ONNX models. Since many deep learning 
 
 #### Unified backend interface
 
-ONNX has defined a unified (Python) backend interface at https://github.com/onnx/onnx/blob/master/onnx/backend/base.py.
+ONNX has defined a unified (Python) backend interface at [onnx/backend/base.py](/onnx/backend/base.py).
 
 There are three core concepts in this interface: `Device`, `Backend` and `BackendRep`.
 

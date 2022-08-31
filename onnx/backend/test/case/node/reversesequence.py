@@ -1,7 +1,4 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+# SPDX-License-Identifier: Apache-2.0
 
 import numpy as np  # type: ignore
 
@@ -13,7 +10,7 @@ from . import expect
 class ReverseSequence(Base):
 
     @staticmethod
-    def export_reversesequence_time():  # type: () -> None
+    def export_reversesequence_time() -> None:
         node = onnx.helper.make_node(
             'ReverseSequence',
             inputs=['x', 'sequence_lens'],
@@ -36,7 +33,7 @@ class ReverseSequence(Base):
                name='test_reversesequence_time')
 
     @staticmethod
-    def export_reversesequence_batch():  # type: () -> None
+    def export_reversesequence_batch() -> None:
         node = onnx.helper.make_node(
             'ReverseSequence',
             inputs=['x', 'sequence_lens'],
