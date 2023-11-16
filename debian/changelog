@@ -1,3 +1,9 @@
+onnx (1.12.0-2pexip5) pexip-bookworm; urgency=medium
+
+  * Initial bookworm build
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 16 Nov 2023 10:16:55 +0000
+
 onnx (1.12.0-2pexip4) pexip; urgency=medium
 
   * Rebuild for new protobuf version
