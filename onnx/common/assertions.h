@@ -1,3 +1,5 @@
+// Copyright (c) ONNX Project Contributors
+
 /*
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -19,7 +21,7 @@ struct assert_error : public std::runtime_error {
 
 struct tensor_error : public assert_error {
  public:
-  explicit tensor_error(std::string msg) : assert_error(msg) {}
+  explicit tensor_error(const std::string& msg) : assert_error(msg) {}
 };
 
 std::string barf(const char* fmt, ...);

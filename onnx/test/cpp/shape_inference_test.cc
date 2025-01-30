@@ -1,8 +1,11 @@
+// Copyright (c) ONNX Project Contributors
+
 /*
  * SPDX-License-Identifier: Apache-2.0
  */
 
 #include <iostream>
+
 #include "gtest/gtest.h"
 #include "onnx/defs/parser.h"
 #include "onnx/defs/schema.h"
@@ -409,6 +412,7 @@ static void doInferencingTest(bool use_scan_opset8) {
   std::vector<const TypeProto*> subgraphInputTypes = {&simple_tensor, &simple_tensor};
 
   std::vector<const TensorProto*> subgraphInputData = {};
+  ShapeInferenceOptions options{false, 0, false};
   auto output = graphInferencer.doInferencing(subgraphInputTypes, subgraphInputData);
 
   // check the subgraph outputs had their shape inferred when we called
@@ -482,7 +486,7 @@ static void doInferencingTest(bool use_scan_opset8) {
   valueTypesByName["loop_state_start"] = &loop_state_in_tensor;
   valueTypesByName["scan_op_in"] = &scan_in_tensor;
 
-  InferenceContextImpl ctx(scan, valueTypesByName, {}, {}, {}, &graphInfCtx);
+  InferenceContextImpl ctx(scan, valueTypesByName, {}, {}, options, {}, &graphInfCtx);
   if (use_scan_opset8)
     ScanInferenceFunctionOpset8(ctx);
   else
@@ -503,8 +507,7 @@ TEST(GraphInferencerImplTest, Scan9_BasicTest) {
   doInferencingTest(false);
 }
 
-void RunReshapeShapeInfTest(const char* modelStr, TensorShapeProto& expectedShape) {
-  ModelProto model;
+void ParseAndInfer(ModelProto& model, const char* modelStr) {
   OnnxParser parser(modelStr);
   auto status = parser.Parse(model);
   EXPECT_TRUE(status.IsOK()) << status.ErrorMessage();
@@ -512,8 +515,13 @@ void RunReshapeShapeInfTest(const char* modelStr, TensorShapeProto& expectedShap
 
   ShapeInferenceOptions options{true, 1, true};
   ONNX_NAMESPACE::shape_inference::InferShapes(model, ONNX_NAMESPACE::OpSchemaRegistry::Instance(), options);
+}
 
-  const auto inferredShape = model.graph().output()[0].type().tensor_type().shape();
+void RunReshapeShapeInfTest(const char* modelStr, TensorShapeProto& expectedShape) {
+  ModelProto model;
+  ParseAndInfer(model, modelStr);
+
+  const auto inferredShape = model.graph().output(0).type().tensor_type().shape();
   EXPECT_TRUE(inferredShape.dim_size() == expectedShape.dim_size());
 
   for (int i = 0; i < inferredShape.dim_size(); i++) {
@@ -599,6 +607,53 @@ agraph (float[1, 196608] m) => (float[?, ?, ?] z)
   expectedShape.mutable_dim()->Add()->set_dim_value(256);
 
   RunReshapeShapeInfTest(modelStr, expectedShape);
+}
+
+TEST(ShapeInferenceTest, CheckShapesAndTypesTest) {
+#ifndef ONNX_NO_EXCEPTIONS
+  // Tensor element types mis-match should cause an exception.
+  TypeProto tensor_infer;
+  auto* tensor_infer_type = tensor_infer.mutable_tensor_type();
+  tensor_infer_type->set_elem_type(TensorProto_DataType_FLOAT);
+
+  TypeProto tensor_exist;
+  auto* tensor_exist_type = tensor_exist.mutable_tensor_type();
+  tensor_exist_type->set_elem_type(TensorProto_DataType_UINT8);
+
+  EXPECT_THROW(checkShapesAndTypes(tensor_infer, tensor_exist), ONNX_NAMESPACE::InferenceError);
+#endif
+}
+
+TEST(ShapeInferenceTest, CustomOpTest) {
+  const char* modelStr = R"ONNX(
+<ir_version: 8,  opset_import: ["" : 15, "custom.domain" : 1]>
+agraph (float[256, 768, 3] x) => (z1, z2)
+{
+    z1 = custom.domain.CustomOp (x)
+    # Inference cannot determine the type/shape of z1
+    z2 = Abs(x)
+    # Inference SHOULD determine the type/shape of z2 (same as that of x)
+}
+)ONNX";
+
+  ModelProto model;
+  ParseAndInfer(model, modelStr);
+
+  auto& z1_value_info = model.graph().output(0);
+  // Check no inferred type for z1 (It's a quirk of the implementation that it
+  // has a dummy TypeProto, but it should have no values filled in.)
+  ASSERT_TRUE(z1_value_info.has_type());
+  ASSERT_FALSE(z1_value_info.type().has_tensor_type());
+
+  // Check inferred type for z2:
+  auto& z2_value_info = model.graph().output(1);
+  ASSERT_TRUE(z2_value_info.has_type());
+  ASSERT_TRUE(z2_value_info.type().has_tensor_type());
+  EXPECT_EQ(z2_value_info.type().tensor_type().elem_type(), TensorProto_DataType_FLOAT);
+  EXPECT_EQ(z2_value_info.type().tensor_type().shape().dim_size(), 3);
+  EXPECT_EQ(z2_value_info.type().tensor_type().shape().dim(0).dim_value(), 256);
+  EXPECT_EQ(z2_value_info.type().tensor_type().shape().dim(1).dim_value(), 768);
+  EXPECT_EQ(z2_value_info.type().tensor_type().shape().dim(2).dim_value(), 3);
 }
 
 } // namespace Test

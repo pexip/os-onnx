@@ -1,2 +1,5 @@
+fix-shebang.patch
 pytest-no-nbval.patch
 soversion.patch
+cmake-no-rpath.patch
+replace-re2.patch

@@ -1,3 +1,5 @@
+// Copyright (c) ONNX Project Contributors
+
 /*
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -8,15 +10,19 @@
 #pragma once
 
 #include <stdint.h>
+
 #include <algorithm>
 #include <atomic>
 #include <cstdint>
 #include <functional>
 #include <iostream>
+#include <limits>
 #include <memory>
+#include <set>
 #include <sstream>
 #include <string>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 #include "onnx/common/array_ref.h"
@@ -32,6 +38,16 @@
   TypeName& operator=(const TypeName&) = delete
 
 namespace ONNX_NAMESPACE {
+
+namespace { // internal/private API
+
+std::string toVarName(size_t i) {
+  std::ostringstream oss;
+  oss << "_v_" << i;
+  return oss.str();
+}
+
+} // namespace
 
 // Graph represents one "function" of computation.
 // It uses a simple ownership model where the graph owns all the nodes inside it.
@@ -52,7 +68,10 @@ class ResourceGuard final {
   bool released_;
 
  public:
-  ResourceGuard(std::function<void()> destructor) : destructor_(std::move(destructor)), released_(false) {}
+  ONNX_DISALLOW_COPY_AND_ASSIGN(ResourceGuard);
+  explicit ResourceGuard(std::function<void()> destructor) : destructor_(std::move(destructor)), released_(false) {}
+  ResourceGuard(ResourceGuard&& other) = default;
+  ResourceGuard& operator=(ResourceGuard&& other) = default;
 
   ~ResourceGuard() {
     if (!released_)
@@ -65,9 +84,9 @@ class ResourceGuard final {
 };
 
 struct Dimension final {
-  Dimension() : is_unknown(true) {}
-  Dimension(std::string param) : is_unknown(false), is_int(false), dim(-1), param(std::move(param)) {}
-  Dimension(int64_t dim) : is_unknown(false), is_int(true), dim(dim) {}
+  Dimension() : is_unknown(true), is_int(false), dim(-1) {}
+  Dimension(std::string param) : is_unknown(false), is_int(false), dim(-1), param(std::move(param)) {} // NOLINT
+  Dimension(int64_t dim) : is_unknown(false), is_int(true), dim(dim) {} // NOLINT
 
   bool is_unknown;
   bool is_int;
@@ -99,7 +118,7 @@ static inline const char* toString(AttributeKind kind) {
 }
 
 struct AttributeValue {
-  AttributeValue(Symbol name) : name(name) {}
+  explicit AttributeValue(Symbol name) : name(name) {}
   using Ptr = std::unique_ptr<AttributeValue>;
   Symbol name;
   virtual AttributeKind kind() const = 0;
@@ -286,6 +305,9 @@ using NodeKind = Symbol;
 struct Value final {
   ONNX_DISALLOW_COPY_AND_ASSIGN(Value);
   Value(Node* node_, size_t offset_);
+  Value(Value&&) = default;
+  Value& operator=(Value&&) = default;
+  ~Value() = default;
 
  private:
   friend struct Node;
@@ -334,7 +356,7 @@ struct Value final {
   std::string uniqueName() const {
     if (has_unique_name())
       return unique_name_;
-    return ONNX_NAMESPACE::to_string(unique());
+    return toVarName(unique());
   }
   Value* setUniqueName(const std::string& name, bool rename_subgraph_captured_nodes = true);
   Value* setStage(size_t s) {
@@ -422,6 +444,8 @@ struct Node : public Attributes<Node> {
   std::string domain_;
   bool has_doc_string_;
   std::string doc_string_;
+  bool has_overload_;
+  std::string overload_;
 
  protected:
   Node(Graph* graph_, NodeKind kind_); // defined after graph
@@ -446,6 +470,16 @@ struct Node : public Attributes<Node> {
   void setDomain(std::string domain) {
     has_domain_ = true;
     domain_ = std::move(domain);
+  }
+  bool has_overload() const {
+    return has_overload_;
+  }
+  const std::string& overload() const {
+    return overload_;
+  }
+  void setOverload(std::string overload) {
+    has_overload_ = true;
+    overload_ = std::move(overload);
   }
   bool has_doc_string() const {
     return has_doc_string_;
@@ -820,7 +854,7 @@ class OpSetID final {
     ONNX_TRY {
       std::string new_domain = target.substr(0, target.find("$"));
       int new_version = ONNX_NAMESPACE::stoi(target.substr(target.find("$") + 1, target.length()).c_str());
-      return OpSetID(std::move(new_domain), new_version);
+      return OpSetID(new_domain, new_version);
     }
     ONNX_CATCH(const std::runtime_error& e) {
       ONNX_HANDLE_EXCEPTION([&]() { ONNX_ASSERTM(false, "Error in fromString: %s", e.what()); });
@@ -879,8 +913,6 @@ struct Graph final {
 
   std::vector<Tensor> initializers_;
   std::vector<std::string> initializer_names_;
-  // Store a name to offset map for erasing initializer node
-  std::map<std::string, int> initializer_to_offset_map_;
 
   bool has_name_;
   std::string name_;
@@ -944,7 +976,7 @@ struct Graph final {
 
   void addInitializer(Tensor& initializer) {
     if (initializer.name().empty()) {
-      initializer.setName(ONNX_NAMESPACE::to_string(getNextUnique()));
+      initializer.setName(toVarName(getNextUnique()));
     }
     initializers_.push_back(initializer);
     initializer_names_.push_back(initializer.name());
@@ -959,7 +991,6 @@ struct Graph final {
     init_value->setUniqueName(initializer.name());
     init_value->setSizes(dim_sizes);
     init_value->setElemType(initializer.elem_type());
-    initializer_to_offset_map_[initializer.name()] = init_value->offset();
     return init_value;
   }
 
@@ -972,9 +1003,11 @@ struct Graph final {
         initializers_.end());
     initializer_names_.erase(
         std::remove(initializer_names_.begin(), initializer_names_.end(), name), initializer_names_.end());
-    if (initializer_to_offset_map_.count(name) > 0) {
-      initializer_node_->eraseOutput(initializer_to_offset_map_[name]);
-      initializer_to_offset_map_.erase(name);
+    for (size_t i = 0; i < initializer_node_->outputs().size(); i++) {
+      if (initializer_node_->outputs()[i]->uniqueName() == name) {
+        initializer_node_->eraseOutput(i);
+        break;
+      }
     }
   }
   void clearInitializers() {
@@ -994,6 +1027,9 @@ struct Graph final {
       }
     }
     return initializers_.end();
+  }
+  bool is_constant_initializer(const Value* value) const {
+    return value->node() == initializer_node_;
   }
   ArrayRef<Value*> inputs() {
     return input_->outputs();
@@ -1020,9 +1056,9 @@ struct Graph final {
   }
 
   size_t getNextUnique() {
-    std::string next_unique_name = ONNX_NAMESPACE::to_string(++next_unique_);
+    std::string next_unique_name = toVarName(++next_unique_);
     while (!isNameUnique(next_unique_name)) {
-      next_unique_name = ONNX_NAMESPACE::to_string(++next_unique_);
+      next_unique_name = toVarName(++next_unique_);
     }
     return next_unique_;
   }
@@ -1117,7 +1153,7 @@ struct Graph final {
   // Adds to graph initializer list, initializer names list, and as a graph input
   // Also syncs the initializer name, tensor name, and value name
   // Create an initializer whose value is stored in input
-  Value* addInitializerAndInput(const Tensor& initializer, std::string name) {
+  Value* addInitializerAndInput(const Tensor& initializer, const std::string& name) {
     Tensor initializerCopy = initializer;
     std::vector<Dimension> dim_sizes{initializerCopy.sizes().cbegin(), initializerCopy.sizes().cend()};
     Value* new_init = addInput();
@@ -1130,14 +1166,16 @@ struct Graph final {
   }
 
   Value* addInitializerAndInput(const Tensor& initializer) {
-    return addInitializerAndInput(initializer, ONNX_NAMESPACE::to_string(getNextUnique()));
+    return addInitializerAndInput(initializer, toVarName(getNextUnique()));
   }
 
   // Erases from graph initializer list, initializer names list, and as a graph input
   // Must have no uses
   void eraseInitializerAndInput(Value* v) {
     eraseInitializer(v->uniqueName());
-    eraseInput(v->offset());
+    if (v->node() == input_) {
+      eraseInput(v->offset());
+    }
   }
 
   ~Graph() {
@@ -1168,7 +1206,7 @@ struct Graph final {
 
   friend std::ostream& operator<<(std::ostream& out, const Graph& g);
 
-  void forSelfAndEachSubGraph(std::function<void(Graph*)> fn) {
+  void forSelfAndEachSubGraph(const std::function<void(Graph*)>& fn) {
     fn(this);
 
     for (const Node* node : all_nodes) {
@@ -1185,12 +1223,12 @@ struct Graph final {
     }
   }
 
-  void forSelfAndEachSubGraph(std::function<void(const Graph*)> fn) const {
+  void forSelfAndEachSubGraph(const std::function<void(const Graph*)>& fn) const {
     std::function<void(Graph*)> tmp_fn = [fn](Graph* graph) { fn(graph); };
     const_cast<Graph*>(this)->forSelfAndEachSubGraph(tmp_fn);
   }
 
-  void forEachNode(std::function<void(Node*)> fn) {
+  void forEachNode(const std::function<void(Node*)>& fn) {
     forSelfAndEachSubGraph([fn](Graph* graph) {
       for (Node* node : graph->nodes()) {
         fn(node);
@@ -1198,7 +1236,7 @@ struct Graph final {
     });
   }
 
-  void forEachNode(std::function<void(const Node*)> fn) const {
+  void forEachNode(const std::function<void(const Node*)>& fn) const {
     std::function<void(Node*)> tmp_fn = [fn](Node* node) { fn(node); };
     const_cast<Graph*>(this)->forEachNode(tmp_fn);
   }
@@ -1248,17 +1286,27 @@ inline const Graph* Value::owningGraph() const {
 // `captured` nodes in subgraph determines which value it captures
 // by storing the value's unique name, so old unique names in `captured` nodes
 // should also be updated.
-inline Value* Value::setUniqueName(const std::string& name, bool rename_subgraph_captured_nodes) {
-  if (has_unique_name() && rename_subgraph_captured_nodes) {
+// Initializer names are also storaged in graph.initializer_names_, it should be
+// updated too.
+inline Value* Value::setUniqueName(const std::string& name, bool update_related_names) {
+  if (has_unique_name() && update_related_names) {
     auto* graph = owningGraph();
-    graph->forEachNode([this, &name](Node* node) {
+    auto old_name = unique_name_;
+    for (size_t i = 0; i < owningGraph()->initializer_names_.size(); i++) {
+      auto& initializer_name = owningGraph()->initializer_names_[i];
+      if (initializer_name == old_name) {
+        initializer_name = name;
+        owningGraph()->initializers_[i].setName(name);
+      }
+    }
+    graph->forEachNode([this, &name, &old_name](Node* node) {
       if (node->owningGraph() == this->owningGraph()) {
         // skip non-subgraph
         return;
       }
       if (node->kind() == kCaptured) {
         Value* output = node->output();
-        if (output->uniqueName() == this->uniqueName()) {
+        if (output->uniqueName() == old_name) {
           output->setUniqueName(name, false);
         }
       }
@@ -1285,7 +1333,7 @@ inline void Value::replaceAllUsesWith(Value* newValue) {
     newValue->setUniqueName(unique_name);
     // The "unique" semantic of unique_name should be kept or uses()
     // will return an incorrect result when the value is used in subgraph
-    this->setUniqueName(ONNX_NAMESPACE::to_string(graph->getNextUnique()), false);
+    this->setUniqueName(toVarName(graph->getNextUnique()), false);
   }
   newValue->uses_in_current_graph_.reserve(this->uses_in_current_graph_.size());
   for (auto u : uses_in_current_graph_) {
@@ -1314,7 +1362,8 @@ inline Node::Node(Graph* graph_, NodeKind kind_)
       stage_(graph_->new_node_stage_),
       has_name_(false),
       has_domain_(false),
-      has_doc_string_(false) {
+      has_doc_string_(false),
+      has_overload_(false) {
   graph_->all_nodes.emplace(this);
 }
 

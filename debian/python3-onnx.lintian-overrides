@@ -1,4 +1,5 @@
 # just not necessary
-python3-onnx: binary-without-manpage usr/bin/backend-test-tools
-python3-onnx: binary-without-manpage usr/bin/check-model
-python3-onnx: binary-without-manpage usr/bin/check-node
+python3-onnx: no-manual-page [usr/bin/backend-test-tools]
+python3-onnx: no-manual-page [usr/bin/check-model]
+python3-onnx: no-manual-page [usr/bin/check-node]
+
