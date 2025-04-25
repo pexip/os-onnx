@@ -1,3 +1,5 @@
+// Copyright (c) ONNX Project Contributors
+
 /*
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -5,6 +7,10 @@
 // Adapter for Scan in default domain from version 9 to 8
 
 #pragma once
+
+#include <memory>
+#include <utility>
+#include <vector>
 
 #include "onnx/version_converter/adapters/adapter.h"
 
@@ -54,7 +60,7 @@ struct Scan_9_8 final : public Adapter {
       node->removeAttribute(output_axes);
     }
 
-    // Handling Input and Ouput Changes
+    // Handling Input and Output Changes
 
     node->removeAllInputs();
 
