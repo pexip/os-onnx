@@ -1,3 +1,106 @@
+onnx (1.17.0-3) unstable; urgency=medium
+
+  * Autopkgtest: mask problematic tests for armel, riscv64, s390x.
+  * Apply wrap-and-sort.
+  * Copyright: bump year.
+  * d/control: Fix capitalization error in description.
+  * d/control: update package Section based on lintian I.
+  * d/copyright: fix spelling error.
+  * Bump Standards-Version to 4.7.0. No change needed.
+
+ -- Mo Zhou <lumin@debian.org>  Thu, 30 Jan 2025 12:26:22 -0500
+
+onnx (1.17.0-2) unstable; urgency=medium
+
+  * Upload to unstable. (Closes: #1075852) (Fixes: CVE-2024-5187)
+    The CVE was already fixed in the 1.16.2 release. I forgot to
+    close the bug back then.
+
+ -- Mo Zhou <lumin@debian.org>  Thu, 23 Jan 2025 11:21:11 -0500
+
+onnx (1.17.0-1) experimental; urgency=medium
+
+  * New upstream version 1.17.0
+    Please pin to this version for PyTorch/v2.6.X release.
+  * quilt: Refresh existing patches.
+  * Autopkgtest: add the missing dependency python3-pi.
+  * Patch code to avoid dependency on re2.
+  * Autopkgtest: gate migration with CI results.
+  * Upload to experimental.
+
+ -- Mo Zhou <lumin@debian.org>  Mon, 20 Jan 2025 18:24:12 +0000
+
+onnx (1.16.2-1) unstable; urgency=medium
+
+  * New upstream version 1.16.2
+  * Update lintian overrides.
+  * Bring back the CMake RPATH patch.
+  * Upload to unstable.
+
+ -- Mo Zhou <lumin@debian.org>  Fri, 27 Sep 2024 01:56:12 -0400
+
+onnx (1.16.1-1) experimental; urgency=medium
+
+  * New upstream version 1.16.1
+  * Rebase existing patches.
+  * Upload to experimental.
+
+ -- Mo Zhou <lumin@debian.org>  Sun, 14 Jul 2024 02:54:23 -0400
+
+onnx (1.14.1-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Rename libraries for 64-bit time_t transition.  Closes: #1062824
+
+ -- Benjamin Drung <bdrung@debian.org>  Thu, 29 Feb 2024 02:26:46 +0000
+
+onnx (1.14.1-2) unstable; urgency=medium
+
+  * Upload to unstable.
+
+ -- Mo Zhou <lumin@debian.org>  Sun, 31 Dec 2023 20:01:26 -0500
+
+onnx (1.14.1-1) experimental; urgency=medium
+
+  * New upstream version 1.14.1
+    Please pin to this version for PyTorch/v2.1.X release.
+  * Rebase existing patches.
+  * Autopkgtest: add missing test dependencies.
+
+ -- Mo Zhou <lumin@debian.org>  Fri, 29 Dec 2023 22:21:04 -0500
+
+onnx (1.13.1-3) unstable; urgency=medium
+
+  * Autopkgtest: use arch instead of dpkg-architecture.
+
+ -- Mo Zhou <lumin@debian.org>  Sun, 10 Sep 2023 19:31:05 -0400
+
+onnx (1.13.1-2) unstable; urgency=medium
+
+  * rules: Make rules less confusing.
+  * rules: Toggle verbose makefile.
+  * Autopkgtest: omit numerical precision issue on non-amd64 archs.
+    (Closes: #1011033, #1051585)
+  * Update dh_auto_clean to fix twice in a row FTBS. (Closes: #1048619)
+
+ -- Mo Zhou <lumin@debian.org>  Sun, 10 Sep 2023 11:24:11 -0400
+
+onnx (1.13.1-1) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Apply multi-arch hints. + libonnxifi: Drop Multi-Arch: same.
+
+  [ Mo Zhou ]
+  * New upstream version 1.13.1
+  * watch: Track the github tags page instead.
+  * Rebase existing patches.
+  * ONNXIFI is removed by upstream.
+  * No longer build static library.
+  * Add patch to disable RPATH for shlibs.
+  * Update lintian overrides.
+
+ -- Mo Zhou <lumin@debian.org>  Sun, 20 Aug 2023 00:23:57 -0400
+
 onnx (1.12.0-2+pexip24u7) pexip-bookworm; urgency=medium
 
   * New versioning scheme

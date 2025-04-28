@@ -1,0 +1,12 @@
+Index: onnx/CMakeLists.txt
+===================================================================
+--- onnx.orig/CMakeLists.txt
++++ onnx/CMakeLists.txt
+@@ -27,6 +27,7 @@ option(ONNX_USE_LITE_PROTO "Use lite pro
+ option(ONNX_DISABLE_EXCEPTIONS "Disable exception handling." OFF)
+ option(ONNX_DISABLE_STATIC_REGISTRATION "Disable static registration for onnx operator schemas." OFF)
+ option(ONNX_USE_UNITY_BUILD "Enable Unity (Jumbo) build for" OFF)
++SET(CMAKE_SKIP_RPATH ON)
+ 
+ if(NOT DEFINED ONNX_ML)
+   if(DEFINED ENV{ONNX_ML})

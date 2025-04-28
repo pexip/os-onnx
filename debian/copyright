@@ -4,7 +4,7 @@ Files-Excluded: stubs/*
 Comment:
  .
  Some files such as onnx/onnx-operators.proto contains a banner indicating that
- they are auto-generated files, and their souces are templates such as
+ they are auto-generated files, and their sources are templates such as
  onnx/onnx-operators.in.proto that can be found under the same directory.
 
 Files: *
@@ -68,7 +68,7 @@ Comment: contains snippet from https://stackoverflow.com/a/1235363
  Snippet License: CC-BY-SA-4.0
 
 Files: debian/*
-Copyright: 2019-2020 Mo Zhou <lumin@debian.org>
+Copyright: 2019-2025 Mo Zhou <lumin@debian.org>
 License: Expat
 
 License: Expat

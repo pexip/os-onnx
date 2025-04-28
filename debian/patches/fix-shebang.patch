@@ -1,0 +1,52 @@
+Description: find . -type f -name '*.py' -exec \
+        sed -i -e 's@#!/usr/bin/env python@#!/usr/bin/python3@' '{}' +
+Index: onnx/onnx/backend/test/stat_coverage.py
+===================================================================
+--- onnx.orig/onnx/backend/test/stat_coverage.py
++++ onnx/onnx/backend/test/stat_coverage.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python3
+ 
+ # Copyright (c) ONNX Project Contributors
+ #
+Index: onnx/onnx/defs/gen_doc.py
+===================================================================
+--- onnx.orig/onnx/defs/gen_doc.py
++++ onnx/onnx/defs/gen_doc.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python3
+ 
+ # Copyright (c) ONNX Project Contributors
+ 
+Index: onnx/onnx/gen_proto.py
+===================================================================
+--- onnx.orig/onnx/gen_proto.py
++++ onnx/onnx/gen_proto.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python3
+ 
+ # SPDX-License-Identifier: Apache-2.0
+ from __future__ import annotations
+Index: onnx/tools/gen_coverage_report.py
+===================================================================
+--- onnx.orig/tools/gen_coverage_report.py
++++ onnx/tools/gen_coverage_report.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python3
+ 
+ # Copyright (c) ONNX Project Contributors
+ #
+Index: onnx/tools/protoc-gen-mypy.py
+===================================================================
+--- onnx.orig/tools/protoc-gen-mypy.py
++++ onnx/tools/protoc-gen-mypy.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/python3
+ 
+ # Copyright (c) ONNX Project Contributors
+ 

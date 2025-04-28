@@ -7,6 +7,7 @@
 #include <mutex>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 #include "attr_proto_util.h"
@@ -36,7 +37,7 @@ class FunctionBodyHelper {
     }
 
     template <typename T>
-    AttributeProtoWrapper(const std::string& attr_name, T value) {
+    AttributeProtoWrapper(const std::string& attr_name, const T& value) {
       proto = MakeAttribute(attr_name, value);
     }
   };
@@ -142,7 +143,7 @@ class FunctionBuilder {
   }
 
   template <typename T>
-  FunctionBuilder& Add(const char* node_txt, const std::string& attr_name, T attr_value) {
+  FunctionBuilder& Add(const char* node_txt, const std::string& attr_name, const T& attr_value) {
     return Add(node_txt, MakeAttribute(attr_name, attr_value));
   }
 
